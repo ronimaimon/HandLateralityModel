@@ -1,21 +1,21 @@
 clear; close all;
 params_ctrl.t_wait   = .300; % Early processing time/ Nondecision
-params_ctrl.z        = .0075;% starting point
-params_ctrl.v        = .088; % drift rates
-params_ctrl.Timer_mu = 1.8;  % Mean of timer distribution
+params_ctrl.z        = .006;% starting point
+params_ctrl.v        = .1; % drift rates
+params_ctrl.Timer_mu = 1.6;  % Mean of timer distribution
 samples = 5e4;
 stim_str={'dom', 'ndom'};
 
 
-params_ctrl.theta   = .174;
+params_ctrl.theta   = .17;
 params_ctrl.num_of_simulators = 2;
 [acc_pred_ctrl, rts_pred_ctrl] = full_model(params_ctrl,samples);
 
 subplot(211)
-acc_ctrl = [0.909195	0.901229];
-acc_err_ctrl = [0.016617	0.016794];
-rt_ctrl = [1.345606149	1.395074540];
-rt_err_ctrl= [.077526574	.082837543];
+acc_ctrl = [0.909075  0.901354];
+acc_err_ctrl = [0.017	0.017]; %0.016628  0.016755
+rt_ctrl = [1.265119413  1.307031275];
+rt_err_ctrl= [.0704	.0734]; % 70.387572  73.380428
 bar([1 1.5],acc_ctrl,'w')
 hold on
 errorbar([1 1.5],acc_ctrl,acc_err_ctrl,'.')
@@ -43,17 +43,18 @@ legend(s,{'Model'});
 
 
 params_cong = params_ctrl;
-params_cong.theta    = .14;
+params_cong.theta    = .138;
 
 params_cong.num_of_simulators = 1;
 
 [acc_pred_cong, rts_pred_cong] = full_model(params_cong,samples);
+
 subplot(212)
 
-acc_cong = [0.867962	0.928843];
-acc_err_cong = [0.025816	0.016474];
-rt_cong = [1.499294547	1.652025921];
-rt_err_cong= [0.094525085	0.105223841];
+acc_cong = [0.867863  0.928815];
+acc_err_cong = [0.025816	0.016474];%not updated
+rt_cong = [1.405251180  1.517358161];
+rt_err_cong= [0.094525085	0.105223841];%not updated
 bar([1 1.5],acc_cong,'w')
 hold on
 errorbar([1 1.5],acc_cong,acc_err_cong,'.')
@@ -79,6 +80,10 @@ xlim([0.5 3]);
 title('Congenitals Data')
 legend(s,{'Model'});
 
+'results'
+rt_preds = [mean(rts_pred_ctrl(1,acc_pred_ctrl(1,:)==1)),mean(rts_pred_ctrl(2,acc_pred_ctrl(2,:)==1)),mean(rts_pred_cong(1,acc_pred_cong(1,:)==1)),mean(rts_pred_cong(2,acc_pred_cong(2,:)==1))]
+acc_preds = [mean(acc_pred_ctrl,2)',mean(acc_pred_cong,2)']
+mean([rt_ctrl rt_cong] - rt_preds)+mean([acc_ctrl acc_cong]- acc_preds)*1000
 %%
 % AMPUTEES Currently not in use!
 params_amp          = params_ctrl;
